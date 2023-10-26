@@ -69,12 +69,12 @@ insert_inner_last:
         daddi $v1, $v1, -1
         sb $s1, login($a2)
         bne $a2, $t0, insert
+        daddi $a2, $v1, 1
 
 insert_inner_end:
-        daddi $a0, $v1, 1
         daddi $v0, $v0, 1
         ; nop
-        sb $s0, login($a0)
+        sb $s0, login($a2)
         lb $s0, login($v0)
         daddi $v1, $v0, -1
         ; nop

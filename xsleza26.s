@@ -1,4 +1,4 @@
-; Autor reseni: Jmeno Prijmeni login
+; Autor reseni: Martin Slezák xsleza26
 ; Pocet cyklu k serazeni puvodniho retezce:
 ; Pocet cyklu razeni sestupne serazeneho retezce:
 ; Pocet cyklu razeni vzestupne serazeneho retezce:
@@ -21,14 +21,45 @@ params_sys5:    .space  8   ; misto pro ulozeni adresy pocatku
 ; CODE SEGMENT
                 .text
 main:
-        ; SEM DOPLNTE VASE RESENI
+        daddi $t0, $zero, 1
 
+        ; SEM DOPLNTE VASE RESENI
+        ; i = 1
+        daddi $v0, $zero, 1
+        ; s0 = login[i]
+        lb $s0, login($v0)
+
+insert:
+        daddi $v1, $v0, -1
+        beqz $s0, insert_end
+
+insert_inner:
+        lb $s1, login($v1)
+        ; nop
+        ; nop
+        sltu $a0, $s0, $s1
+        ; nop
+        ; nop
+        daddi $a1, $v1, 1
+        beqz $a0, insert_inner_end
+        daddi $v1, $v1, -1
+        sb $s1, login($a1)
+        bne $a1, $t0, insert_inner
+
+insert_inner_end:
+        ; login[j] = s0
+        daddi $a0, $v1, 1
+        sb $s0, login($a0)
+        daddi $v0, $v0, 1
+        lb $s0, login($v0)
+        bnez $s0, insert
+
+insert_end:
 
         daddi   r4, r0, login   ; vozrovy vypis: adresa login: do r4
         jal     print_string    ; vypis pomoci print_string - viz nize
 
         syscall 0   ; halt
-
 
 print_string:   ; adresa retezce se ocekava v r4
                 sw      r4, params_sys5(r0)

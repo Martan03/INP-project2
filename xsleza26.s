@@ -51,31 +51,29 @@ insert_inner_end:
 
 insert:
         sltu $a3, $v1, $t0
-        daddi $a2, $v1, -1
+        daddi $t1, $v1, -1
         lb $s1, login($v1)
         beq $a3, $t0, insert_inner_last
 
-        lb $s2, login($a2)
+        lb $s2, login($t1)
         sltu $a0, $s0, $s1
         daddi $a2, $v1, 1
         sltu $a1, $s0, $s2
         beqz $a0, insert_inner_end
 
-        daddi $v1, $v1, -1
         sb $s1, login($a2)
-        daddi $a0, $a1, 0
-        daddi $a2, $v1, 1
+        daddi $a2, $v1, 0
         beqz $a1, insert_inner_end
 
-        daddi $v1, $v1, -1
+        daddi $v1, $v1, -2
         sb $s2, login($a2)
         bne $a2, $t0, insert
 
-        daddi $a2, $v1, 1
+        ; daddi $a2, $v1, 1 ; for some reason doesn't affect cycles
 
         daddi $v0, $v0, 1
         ; nop
-        sb $s0, login($a2)
+        sb $s0, login($t1)
         lb $s0, login($v0)
         daddi $v1, $v0, -1
         ; nop

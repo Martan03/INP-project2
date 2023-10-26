@@ -21,38 +21,37 @@ params_sys5:    .space  8   ; misto pro ulozeni adresy pocatku
 ; CODE SEGMENT
                 .text
 main:
-        daddi $t0, $zero, 1
 
         ; SEM DOPLNTE VASE RESENI
-        ; i = 1
+        daddi $t0, $zero, 1
         daddi $v0, $zero, 1
-        ; s0 = login[i]
-        lb $s0, login($v0)
+        ; nop
 
 insert:
+        lb $s0, login($v0)
+        ; nop
         daddi $v1, $v0, -1
         beqz $s0, insert_end
+        ; nop
 
 insert_inner:
         lb $s1, login($v1)
         ; nop
         ; nop
         sltu $a0, $s0, $s1
-        ; nop
-        ; nop
         daddi $a1, $v1, 1
+        ; nop
         beqz $a0, insert_inner_end
         daddi $v1, $v1, -1
         sb $s1, login($a1)
         bne $a1, $t0, insert_inner
 
 insert_inner_end:
-        ; login[j] = s0
         daddi $a0, $v1, 1
-        sb $s0, login($a0)
         daddi $v0, $v0, 1
-        lb $s0, login($v0)
-        bnez $s0, insert
+        ; nop
+        sb $s0, login($a0)
+        j insert
 
 insert_end:
 

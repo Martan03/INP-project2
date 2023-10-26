@@ -33,17 +33,19 @@ main:
 
 insert:
         lb $s1, login($v1)
-        beq $v0, $t0, insert_inner_last
+        sltu $a3, $v1, $t0
+        beq $a3, $t0, insert_inner_last
 
 insert_inner:
-        daddi $v1, $v1, -1
+        daddi $a2, $v1, -1
         ; nop
         ; nop
-        lb $s2, login($v1)
+        lb $s2, login($a2)
         sltu $a0, $s0, $s1
-        daddi $a2, $v1, 2
+        daddi $a2, $v1, 1
         sltu $a1, $s0, $s2
         beqz $a0, insert_inner_end
+        daddi $v1, $v1, -1
         sb $s1, login($a2)
         daddi $a2, $v1, 1
         daddi $a0, $a1, 0

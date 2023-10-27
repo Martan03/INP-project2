@@ -1,11 +1,12 @@
 #include <stdio.h>
 
 int main(void) {
-    char login[] = "vitejte-v-inp-2023";
-    int v0, v1, a0, a1, t0, a2, a3, t1, t2;
+    char login[] = "vvttpnjiiee3220---";
+    int v0, v1, a0, a1, t0, a2, a3, t1, t2, t3;
     char s0, s1, s2;
     int zero = 0;
 
+        t3 = zero + -1; // daddi $t3, $zero, -1
         t0 = zero + 1; // daddi $t0, $zero, 1
         v1 = zero + 0; // daddi $v1, $zero, 0
         t2 = zero + 3; // daddi $t2, $zero, 3
@@ -25,10 +26,9 @@ insert_inner_last:
 insert_inner_end:
         v1 = v0 + 0; // daddi $v1, $v0, 0
         v0 = v0 + 1; // daddi $v0, $v0, 1
-        // ; nop
         login[a2] = s0; // sb $s0, login($a2)
-        s0 = login[v0]; // lb $s0, login($v0)
         s1 = login[v1]; // lb $s1, login($v1)
+        s0 = login[v0]; // lb $s0, login($v0)
         t1 = v1 + -1; // daddi $t1, $v1, -1
         if (s0 == 0) goto insert_end; // beqz $s0, insert_end
 
@@ -47,6 +47,8 @@ insert:
         v1 = v1 + -2; // daddi $v1, $v1, -2
         a3 = a2 < t2; // sltu $a3, $a2, $t2
         login[a2] = s2; // sb $s2, login($a2)
+        a2 = a2 - 1;
+        if (v1 == t3) goto insert_inner_end; // beq $v1, $t3, insert_inner_end
         s1 = login[v1]; // lb $s1, login($v1)
         if (a3 == t0) goto insert_inner_last; // beq $a3, $t0, insert_inner_last
         t1 = v1 + -1; // daddi $t1, $v1, -1

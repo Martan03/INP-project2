@@ -11,7 +11,7 @@
 login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
 ; login:          .asciiz "vvttpnjiiee3220---"  ; sestupne serazeny retezec
 ; login:          .asciiz "---0223eeiijnpttvv"  ; vzestupne serazeny retezec
-; login:          .asciiz "xlogin00"            ; SEM DOPLNTE VLASTNI LOGIN
+; login:          .asciiz "xsleza26"            ; SEM DOPLNTE VLASTNI LOGIN
                                                 ; A POUZE S TIMTO ODEVZDEJTE
 
 params_sys5:    .space  8   ; misto pro ulozeni adresy pocatku
@@ -23,6 +23,7 @@ params_sys5:    .space  8   ; misto pro ulozeni adresy pocatku
 main:
 
         ; SEM DOPLNTE VASE RESENI
+        daddi $t3, $zero, -1
         daddi $t0, $zero, 1
         daddi $v1, $zero, 0
         daddi $t2, $zero, 3
@@ -42,11 +43,11 @@ insert_inner_last:
 insert_inner_end:
         daddi $v1, $v0, 0
         daddi $v0, $v0, 1
-        ; nop
         sb $s0, login($a2)
-        lb $s0, login($v0)
         lb $s1, login($v1)
+        lb $s0, login($v0)
         daddi $t1, $v1, -1
+        ; nop
         beqz $s0, insert_end
 
 insert:
@@ -64,6 +65,8 @@ insert:
         daddi $v1, $v1, -2
         sltu $a3, $a2, $t2
         sb $s2, login($a2)
+        daddi $a2, $a2, -1
+        beq $v1, $t3, insert_inner_end
         lb $s1, login($v1)
         beq $a3, $t0, insert_inner_last
         daddi $t1, $v1, -1

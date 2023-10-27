@@ -25,36 +25,32 @@ main:
         ; SEM DOPLNTE VASE RESENI
         daddi $t0, $zero, 1
         daddi $v1, $zero, 0
-        ; nop
+        daddi $t2, $zero, 3
         lb $s0, login($t0)
-        daddi $v0, $zero, 1
         lb $s1, login($v1)
+        daddi $v0, $zero, 1
         beqz $s0, insert_end
 
 insert_inner_last:
         sltu $a0, $s0, $s1
         daddi $a2, $v1, 1
-        ; nop
-        beqz $a0, insert_inner_end
         daddi $v1, $v1, -1
+        beqz $a0, insert_inner_end
         sb $s1, login($a2)
         daddi $a2, $v1, 1
 
 insert_inner_end:
+        daddi $v1, $v0, 0
         daddi $v0, $v0, 1
         ; nop
         sb $s0, login($a2)
         lb $s0, login($v0)
-        daddi $v1, $v0, -1
-        ; nop
+        lb $s1, login($v1)
+        daddi $t1, $v1, -1
         beqz $s0, insert_end
 
 insert:
-        sltu $a3, $v1, $t0
-        daddi $t1, $v1, -1
-        lb $s1, login($v1)
-        beq $a3, $t0, insert_inner_last
-
+        ; nop
         lb $s2, login($t1)
         sltu $a0, $s0, $s1
         daddi $a2, $v1, 1
@@ -66,18 +62,12 @@ insert:
         beqz $a1, insert_inner_end
 
         daddi $v1, $v1, -2
+        sltu $a3, $a2, $t2
         sb $s2, login($a2)
-        bne $a2, $t0, insert
-
-        ; daddi $a2, $v1, 1 ; for some reason doesn't affect cycles
-
-        daddi $v0, $v0, 1
-        ; nop
-        sb $s0, login($t1)
-        lb $s0, login($v0)
-        daddi $v1, $v0, -1
-        ; nop
-        bnez $s0, insert
+        lb $s1, login($v1)
+        beq $a3, $t0, insert_inner_last
+        daddi $t1, $v1, -1
+        j insert
 
 insert_end:
 

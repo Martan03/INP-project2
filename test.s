@@ -24,47 +24,36 @@ main:
 
         ; SEM DOPLNTE VASE RESENI
         daddi $t0, $zero, 1
-        daddi $v1, $zero, 0
-        daddi $t3, $zero, -1
-        lb $s0, login($t0)
-        lb $s1, login($v1)
         daddi $v0, $zero, 1
+        ; nop
+        lb $s0, login($v0)
+
+        daddi $v1, $v0, -1
+        ; nop
         beqz $s0, insert_end
-        daddi $a2, $v1, 1
 
-        j insert_inner_last
-insert:
-        lb $s2, login($t1)
-        sltu $a0, $s0, $s1
-        daddi $v1, $v1, -2
-        sltu $a1, $s0, $s2
-        beqz $a0, insert_inner_end
-
-        sb $s1, login($a2)
-        daddi $a2, $v1, 2
-        beqz $a1, insert_inner_end
-
-        sltu $a3, $v1, $t0
-        sb $s2, login($a2)
-        daddi $a2, $a2, -1
-        beq $v1, $t3, insert_inner_end
+insert_inner:
         lb $s1, login($v1)
-        daddi $t1, $v1, -1
-        bne $a3, $t0, insert
-
-insert_inner_last:
-        sb $s1, login($a2)
-        daddi $a2, $a2, -1
+        ; nop
+        ; nop
+        sltu $a0, $s0, $s1
+        ; nop
+        daddi $a1, $v1, 1
+        beqz $a0, insert_inner_end
+        daddi $v1, $v1, -1
+        sb $s1, login($a1)
+        bne $a1, $t0, insert_inner
 
 insert_inner_end:
+        daddi $a0, $v1, 1
         daddi $v1, $v0, 0
         daddi $v0, $v0, 1
-        sb $s0, login($a2)
-        lb $s1, login($v1)
+        sb $s0, login($a0)
+        ; nop
         lb $s0, login($v0)
-        daddi $t1, $v1, -1
-        daddi $a2, $v1, 1
-        bnez $s0, insert
+        ; nop
+        ; nop
+        bnez $s0, insert_inner
 
 insert_end:
 

@@ -24,15 +24,21 @@ main:
 
         ; SEM DOPLNTE VASE RESENI
         daddi $t0, $zero, 1
-        daddi $v1, $zero, 0
+        daddi $v1, $zero, 1
         daddi $t3, $zero, -1
         lb $s0, login($t0)
-        lb $s1, login($v1)
-        daddi $v0, $zero, 1
+        lb $s1, login($zero)
+        daddi $v0, $zero, 2
         beqz $s0, insert_end
-        daddi $a2, $v1, 1
 
-        j insert_inner_last
+        sb $s1, login($t0)
+
+        sb $s0, login($zero)
+        lb $s1, login($v1)
+        lb $s0, login($v0)
+        daddi $t1, $v1, -1
+        daddi $a2, $v1, 1
+        beqz $s0, insert_end
 insert:
         lb $s2, login($t1)
         sltu $a0, $s0, $s1
@@ -52,7 +58,6 @@ insert:
         daddi $t1, $v1, -1
         bne $a3, $t0, insert
 
-insert_inner_last:
         sb $s1, login($a2)
         daddi $a2, $a2, -1
 

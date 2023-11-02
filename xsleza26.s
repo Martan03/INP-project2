@@ -8,6 +8,7 @@
 
 ; DATA SEGMENT
                 .data
+;login:          .asciiz "acdb"    ; puvodni uvitaci retezec
 login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
 ; login:          .asciiz "vvttpnjiiee3220---"  ; sestupne serazeny retezec
 ; login:          .asciiz "---0223eeiijnpttvv"  ; vzestupne serazeny retezec
@@ -21,19 +22,22 @@ params_sys5:    .space  8   ; misto pro ulozeni adresy pocatku
 ; CODE SEGMENT
                 .text
 main:
-
         ; SEM DOPLNTE VASE RESENI
         daddi $t0, $zero, 1
-        daddi $v1, $zero, 1
-        daddi $t3, $zero, -1
-        lb $s0, login($t0)
         lb $s1, login($zero)
+        daddi $v1, $zero, 1
+        lb $s0, login($t0)
+        beqz $s1, insert_end
+        daddi $t3, $zero, -1
+        sltu $a0, $s0, $s1
         daddi $v0, $zero, 2
         beqz $s0, insert_end
+        beqz $a0, init
 
         sb $s1, login($t0)
-
         sb $s0, login($zero)
+
+init:
         lb $s1, login($v1)
         lb $s0, login($v0)
         daddi $t1, $v1, -1
@@ -58,8 +62,21 @@ insert:
         daddi $t1, $v1, -1
         bne $a3, $t0, insert
 
-        sb $s1, login($a2)
+        sltu $a0, $s0, $s1
+        daddi $v1, $v0, 0
+        daddi $v0, $v0, 1
+        beqz $a0, insert_inner_end1
         daddi $a2, $a2, -1
+        sb $s1, login($t0)
+
+insert_inner_end1:
+        lb $s1, login($v1)
+        sb $s0, login($a2)
+        lb $s0, login($v0)
+        daddi $a2, $v1, 1
+        daddi $t1, $v1, -1
+        bnez $s0, insert
+        j insert_end
 
 insert_inner_end:
         daddi $v1, $v0, 0

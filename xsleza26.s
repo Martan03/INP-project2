@@ -72,22 +72,21 @@ insert:
         daddi $t1, $v1, -1
         bne $a3, $t0, insert
 
-        ; Swaps last two characters
+        ; Swaps first character with character $a0 from loop
         ; Inits variables for next loop
         sltu $a0, $s0, $s1
         daddi $v1, $v0, 0
         daddi $v0, $v0, 1
+        sb $s0, login($t0)
         ; If it's not supposed to swap, jump to insert_inner_end1
         beqz $a0, insert_inner_end1
-        daddi $a2, $a2, -1
         sb $s1, login($t0)
+        sb $s0, login($zero)
 
-; Saves char in $s0 to $a2
 ; Inits variables for next loop
 ; Jumps to insert loop if next loaded char is not zero char
 insert_inner_end1:
         lb $s1, login($v1)
-        sb $s0, login($a2)
         lb $s0, login($v0)
         daddi $a2, $v1, 1
         daddi $t1, $v1, -1

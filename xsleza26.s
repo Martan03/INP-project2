@@ -24,13 +24,13 @@ main:
         ; Inits variables and handles first two characters
         daddi $t0, $zero, 1
         lb $s1, login($zero)
-        daddi $v1, $zero, 1
+        daddi $t3, $zero, -1
         lb $s0, login($t0)
         ; Checks if char is zero character
         beqz $s1, insert_end
-        daddi $t3, $zero, -1
-        sltu $a0, $s0, $s1
         daddi $v0, $zero, 2
+        ; nop
+        sltu $a0, $s0, $s1
         ; Checks if char is zero character
         beqz $s0, insert_end
 
@@ -42,10 +42,10 @@ main:
 
 ; Inits for main loop
 init:
-        lb $s1, login($v1)
+        lb $s1, login($t0)
         lb $s0, login($v0)
-        daddi $t1, $v1, -1
-        daddi $a2, $v1, 1
+        daddi $t1, $t0, -1
+        daddi $a2, $t0, 1
         beqz $s0, insert_end
 
 ; Main loop loads two chars at the time
@@ -54,29 +54,28 @@ init:
 ; This cycle is repeated until there are at least two chars to swap
 ; When not enough chars, continues to code which swaps last two
 insert:
-        lb $s2, login($t1)
         sltu $a0, $s0, $s1
-        daddi $v1, $v1, -2
-        sltu $a1, $s0, $s2
+        lb $s2, login($t1)
+        daddi $t1, $t1, -1
         beqz $a0, insert_inner_end
+        sltu $a1, $s0, $s2
 
         sb $s1, login($a2)
-        daddi $a2, $v1, 2
+        daddi $a2, $a2, -1
         beqz $a1, insert_inner_end
 
-        sltu $a3, $v1, $t0
+        ; nop
         sb $s2, login($a2)
         daddi $a2, $a2, -1
-        beq $v1, $t3, insert_inner_end
-        lb $s1, login($v1)
-        daddi $t1, $v1, -1
-        bne $a3, $t0, insert
+        beq $t1, $t3, insert_inner_end
+        lb $s1, login($t1)
+        daddi $t1, $t1, -1
+        bne $a2, $t0, insert
 
         ; Swaps first character with character $a0 from loop
         ; Inits variables for next loop
         sltu $a0, $s0, $s1
-        daddi $v1, $v0, 0
-        daddi $v0, $v0, 1
+        daddi $a2, $v0, 1
         sb $s0, login($t0)
         ; If it's not supposed to swap, jump to insert_inner_end1
         beqz $a0, insert_inner_end1
@@ -86,10 +85,10 @@ insert:
 ; Inits variables for next loop
 ; Jumps to insert loop if next loaded char is not zero char
 insert_inner_end1:
-        lb $s1, login($v1)
-        lb $s0, login($v0)
-        daddi $a2, $v1, 1
-        daddi $t1, $v1, -1
+        lb $s1, login($v0)
+        lb $s0, login($a2)
+        daddi $v0, $v0, 1
+        daddi $t1, $a2, -2
         bnez $s0, insert
         j insert_end
 
@@ -97,13 +96,13 @@ insert_inner_end1:
 ; Inits variables for next loop
 ; Jumps to insert loop if next loaded char is not zero char
 insert_inner_end:
-        daddi $v1, $v0, 0
+        daddi $t1, $v0, 0
         daddi $v0, $v0, 1
         sb $s0, login($a2)
-        lb $s1, login($v1)
+        daddi $a2, $t1, 1
         lb $s0, login($v0)
-        daddi $t1, $v1, -1
-        daddi $a2, $v1, 1
+        lb $s1, login($t1)
+        daddi $t1, $t1, -1
         bnez $s0, insert
 
 insert_end:

@@ -1,8 +1,8 @@
 ; Autor reseni: Martin Slezák xsleza26
-; Pocet cyklu k serazeni puvodniho retezce: 973
-; Pocet cyklu razeni sestupne serazeneho retezce: 1302
-; Pocet cyklu razeni vzestupne serazeneho retezce: 270
-; Pocet cyklu razeni retezce s vasim loginem: 255
+; Pocet cyklu k serazeni puvodniho retezce: 965
+; Pocet cyklu razeni sestupne serazeneho retezce: 1295
+; Pocet cyklu razeni vzestupne serazeneho retezce: 254
+; Pocet cyklu razeni retezce s vasim loginem: 251
 ; Implementovany radici algoritmus: Insertion sort
 ; ------------------------------------------------
 
@@ -29,11 +29,10 @@ main:
         ; Checks if char is zero character
         beqz $s1, insert_end
         daddi $v0, $zero, 2
-        ; nop
         sltu $a0, $s0, $s1
         ; Checks if char is zero character
         beqz $s0, insert_end
-
+        daddi $a2, $t0, 1
         ; Skips swapping if latter char is not less
         beqz $a0, init
         ; Swaps first two characters
@@ -42,14 +41,13 @@ main:
 
 ; Inits for main loop
 init:
-        lb $s1, login($t0)
         lb $s0, login($v0)
-        daddi $t1, $t0, -1
-        daddi $a2, $t0, 1
+        lb $s1, login($t0)
+        daddi $t1, $zero, 0
         beqz $s0, insert_end
 
 ; Main loop loads two chars at the time
-; Moves char to the right until it's greater then char on $v0
+; It uses insertion sort
 ; When char is smaller or equal to char on $v0, jumps to insert_inner_end
 ; This cycle is repeated until there are at least two chars to swap
 ; When not enough chars, continues to code which swaps last two
@@ -64,7 +62,7 @@ insert:
         daddi $a2, $a2, -1
         beqz $a1, insert_inner_end
 
-        ; nop
+        nop
         sb $s2, login($a2)
         daddi $a2, $a2, -1
         beq $t1, $t3, insert_inner_end

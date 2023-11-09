@@ -1,15 +1,15 @@
 ; Autor reseni: Martin Slezák xsleza26
-; Pocet cyklu k serazeni puvodniho retezce:
-; Pocet cyklu razeni sestupne serazeneho retezce:
-; Pocet cyklu razeni vzestupne serazeneho retezce:
-; Pocet cyklu razeni retezce s vasim loginem:
-; Implementovany radici algoritmus:
+; Pocet cyklu k serazeni puvodniho retezce: 965
+; Pocet cyklu razeni sestupne serazeneho retezce: 1295
+; Pocet cyklu razeni vzestupne serazeneho retezce: 270
+; Pocet cyklu razeni retezce s vasim loginem: 255
+; Implementovany radici algoritmus: Insertion sort
 ; ------------------------------------------------
 
 ; DATA SEGMENT
                 .data
-login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
-; login:          .asciiz "vvttpnjiiee3220---"  ; sestupne serazeny retezec
+; login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
+login:          .asciiz "vvttpnjiiee3220---"  ; sestupne serazeny retezec
 ; login:          .asciiz "---0223eeiijnpttvv"  ; vzestupne serazeny retezec
 ; login:          .asciiz "xsleza26"            ; SEM DOPLNTE VLASTNI LOGIN
                                                 ; A POUZE S TIMTO ODEVZDEJTE
@@ -21,39 +21,57 @@ params_sys5:    .space  8   ; misto pro ulozeni adresy pocatku
 ; CODE SEGMENT
                 .text
 main:
+        daddi $t2, $zero, -1
+        daddi $v0, $zero, 2
+        daddi $t1, $zero, 0
+        daddi $a3, $zero, 1
 
-        ; SEM DOPLNTE VASE RESENI
-        daddi $t0, $zero, 1
-        daddi $v0, $zero, 1
-        ; nop
+        lb $s0, login($a3)
+        j loop
+
+insert_inner_end0:
+        daddi $t5, $t5, -1
+insert_inner_end1:
+        daddi $a3, $v0, 0
+        daddi $v0, $v0, 1
+        sb $s0, login($t5)
         lb $s0, login($v0)
-
-        daddi $v1, $v0, -1
+        daddi $t1, $a3, -1
         ; nop
         beqz $s0, insert_end
 
-insert_inner:
-        lb $s1, login($v1)
-        ; nop
-        ; nop
-        sltu $a0, $s0, $s1
-        ; nop
-        daddi $a1, $v1, 1
-        beqz $a0, insert_inner_end
-        daddi $v1, $v1, -1
-        sb $s1, login($a1)
-        bne $a1, $t0, insert_inner
+loop:
+        lb $s1, login($a3)
+        lb $s2, login($t1)
+        daddi $t5, $a3, 1
+        sltu $a1, $s0, $s1
+        sltu $a2, $s0, $s2
+        daddi $t1, $t1, -2
+        beqz $a1, insert_inner_end1
+        beqz $a2, insert_inner_end0
+        sb $s1, login($t5)
+        sb $s2, login($a3)
+        daddi $a3, $a3, -2
+        bgez $t1, loop
+
+insert_inner_last:
+        daddi $t5, $a3, 1
+        beq $a3, $t2, insert_inner_end
+        lb $s1, login($a3)
+        sltu $a1, $s0, $s1
+        beqz $a1, insert_inner_end
+        sb $s1, login($t5)
+        daddi $t5, $t5, -1
 
 insert_inner_end:
-        daddi $a0, $v1, 1
-        daddi $v1, $v0, 0
+        daddi $a3, $v0, 0
         daddi $v0, $v0, 1
-        sb $s0, login($a0)
-        ; nop
+        sb $s0, login($t5)
+        daddi $t1, $a3, -1
         lb $s0, login($v0)
         ; nop
         ; nop
-        bnez $s0, insert_inner
+        bnez $s0, loop
 
 insert_end:
 

@@ -1,8 +1,8 @@
 ; Autor reseni: Martin Slezák xsleza26
-; Pocet cyklu k serazeni puvodniho retezce: 965
-; Pocet cyklu razeni sestupne serazeneho retezce: 1295
-; Pocet cyklu razeni vzestupne serazeneho retezce: 270
-; Pocet cyklu razeni retezce s vasim loginem: 255
+; Pocet cyklu k serazeni puvodniho retezce: 872
+; Pocet cyklu razeni sestupne serazeneho retezce: 1169
+; Pocet cyklu razeni vzestupne serazeneho retezce: 300
+; Pocet cyklu razeni retezce s vasim loginem: 252
 ; Implementovany radici algoritmus: Insertion sort
 ; ------------------------------------------------
 
@@ -41,7 +41,7 @@ insert_inner_end1:
         daddi $a3, $v0, 0
         daddi $v0, $v0, 1
         sb $s0, login($t5)
-        daddi $s2, $s0, 0
+        ; nop
         lb $s0, login($v0)
         daddi $t1, $a3, -1
         ; nop

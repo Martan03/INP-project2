@@ -52,10 +52,10 @@ insert_inner_end1:
 insert_inner_end2:
         daddi $v0, $v0, 1
         sb $s0, login($a3)
-        ; nop
+        nop
         lb $s0, login($v0)
-        daddi $t1, $v0, -2
         daddi $a3, $v0, -1
+        daddi $t1, $v0, -2
         beqz $s0, insert_end
 
 loop:
@@ -77,17 +77,19 @@ insert_inner_last:
         daddi $t5, $t1, 2
         beq $a3, $t2, insert_inner_end
         lb $s1, login($a3)
+        nop
+        nop
         sltu $a1, $s0, $s1
-        ; nop
-        ; nop
+        nop
+        nop
         beqz $a1, insert_inner_end
         sb $s1, login($t5)
         daddi $t5, $t5, -1
 
 insert_inner_end:
         daddi $v0, $v0, 1
+        nop
         sb $s0, login($t5)
-        ; nop
         lb $s0, login($v0)
         daddi $a3, $v0, -1
         daddi $t1, $v0, -2

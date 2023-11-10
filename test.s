@@ -38,14 +38,15 @@ main:
         j loop_first
 
 insert_inner_end1:
+        ; t5 == v0 no need to swap
         daddi $a3, $v0, 0
         daddi $v0, $v0, 1
         sb $s0, login($t5)
-        ; nop
-        lb $s0, login($v0)
         daddi $t1, $a3, -1
-        ; nop
-        bnez $s0, loop
+        lb $s0, login($v0)
+        lb $s1, login($a3)
+        lb $s2, login($t1)
+        bnez $s0, loop_first
         j insert_end
 
 insert_inner_end2:
@@ -84,13 +85,12 @@ insert_inner_last:
         daddi $t5, $t5, -1
 
 insert_inner_end:
-        daddi $a3, $v0, 0
         daddi $v0, $v0, 1
         sb $s0, login($t5)
-        daddi $t1, $a3, -1
+        ; nop
         lb $s0, login($v0)
-        ; nop
-        ; nop
+        daddi $a3, $v0, -1
+        daddi $t1, $v0, -2
         bnez $s0, loop
 
 insert_end:

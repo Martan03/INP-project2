@@ -8,8 +8,8 @@
 
 ; DATA SEGMENT
                 .data
-login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
-; login:          .asciiz "vvttpnjiiee3220---"  ; sestupne serazeny retezec
+; login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
+login:          .asciiz "vvttpnjiiee3220---"  ; sestupne serazeny retezec
 ; login:          .asciiz "---0223eeiijnpttvv"  ; vzestupne serazeny retezec
 ; login:          .asciiz "xsleza26"            ; SEM DOPLNTE VLASTNI LOGIN
                                                 ; A POUZE S TIMTO ODEVZDEJTE
@@ -76,7 +76,7 @@ loop_first:
         daddi $v1, $v0, 1
         daddi $t5, $t1, 2
         daddi $a3, $v0, 0
-        lb $s3, login($v0)
+        lb $s3, login($v1)
         sb $s0, login($t5)
         daddi $t1, $v0, -1
         bnez $s3, loop1

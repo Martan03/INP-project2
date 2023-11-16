@@ -8,7 +8,7 @@
 
 ; DATA SEGMENT
                 .data
-login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
+; login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
 ; login:          .asciiz "vvttpnjiiee3220---"  ; sestupne serazeny retezec
 ; login:          .asciiz "---0223eeiijnpttvv"  ; vzestupne serazeny retezec
 ; login:          .asciiz "xsleza26"            ; SEM DOPLNTE VLASTNI LOGIN
@@ -22,22 +22,17 @@ params_sys5:    .space  8   ; misto pro ulozeni adresy pocatku
                 .text
 main:
         lb $s2, login($zero)
-        ; nop
-        ; nop
-        beqz $s2, insert_end
-
         daddi $v1, $zero, 1
         daddi $t0, $zero, 2
-        daddi $t1, $zero, 3
-        daddi $t2, $zero, 1
+        beqz $s2, insert_end
 
         lb $s0, login($v1)
-        ; nop
-        ; nop
+        daddi $t1, $zero, 3
+        daddi $t2, $zero, 1
         beqz $s0, insert_end
 
         sltu $a0, $s0, $s2
-        ; nop
+        daddi $t3, $zero, 0
         ; nop
         beqz $a0, prep
         sb $s2, login($v1)
@@ -50,7 +45,7 @@ prep:
         beqz $s0, insert_end
 
         lb $s1, login($t1)
-        lb $s2, login($v1)
+        ; nop
         ; nop
         beqz $s1, insert_end_swap
 
@@ -64,30 +59,24 @@ insert_cmp:
 
 insert:
         lb $s2, login($t2)
-        daddi $t2, $t2, -1
-        ; nop
+        lb $s3, login($t3)
+        daddi $t2, $t2, -2
         sltu $a0, $s1, $s2
-        ; nop
-        ; nop
+        daddi $t3, $t3, -2
+        sltu $a1, $s1, $s3
         beqz $a0, insert_inner_end
         sb $s2, login($t1)
         daddi $t1, $t1, -1
+        beqz $a1, insert_inner_end1
         ; nop
-        ; nop
-        lb $s2, login($t2)
-        daddi $t2, $t2, -1
-        ; nop
-        ; nop
-        sltu $a0, $s1, $s2
-        ; nop
-        ; nop
-        beqz $a0, insert_inner_end
-        sb $s2, login($t1)
+        sb $s3, login($t1)
         daddi $t1, $t1, -1
-        bgez $t2, insert
+
+        bgez $t3, insert
 
         daddi $t1, $t0, 3
         daddi $t2, $t0, 1
+        daddi $t3, $t0, 0
         daddi $t0, $t0, 2
         sb $s0, login($zero)
         sb $s1, login($v1)
@@ -102,13 +91,19 @@ insert:
         j insert_single_prep
 
 insert_inner_end:
+        daddi $t2, $t2, 1
+        and $a0, $t3, $v1
         sb $s1, login($t1)
         daddi $t1, $t1, -1
-        and $a0, $t2, $v1
-        ; nop
-        ; nop
         bnez $a0, insert_single_last
         j insert_single
+
+insert_inner_end1:
+        and $a0, $t2, $v1
+        sb $s1, login($t1)
+        daddi $t1, $t1, -1
+        daddi $s2, $s3, 0
+        bnez $a0, insert_single_last
 
 insert_single_prep:
         lb $s2, login($t2)
@@ -138,6 +133,7 @@ insert_single_end:
 
         daddi $t1, $t0, 3
         daddi $t2, $t0, 1
+        daddi $t3, $t0, 0
         daddi $t0, $t0, 2
         ; nop
         ; nop
@@ -165,6 +161,7 @@ insert_single_last_end:
         sb $s0, login($t1)
         daddi $t1, $t0, 3
         daddi $t2, $t0, 1
+        daddi $t3, $t0, 0
         daddi $t0, $t0, 2
         ; nop
         ; nop

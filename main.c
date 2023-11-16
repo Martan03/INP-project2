@@ -18,7 +18,7 @@ int main(void) {
 
         a0 = s0 < s2; // sltu $a0, $s0, $s2
         t3 = zero + 0; // daddi $t3, $zero, 0
-        // ; nop
+        v0 = zero + -1; // daddi $v0, $zero, -1
         if (a0 == 0) goto prep; // beqz $a0, prep
         login[v1] = s2; // sb $s2, login($v1)
         login[zero] = s0; // sb $s0, login($zero)
@@ -54,7 +54,7 @@ insert:
         t1 = t1 + -1; // daddi $t1, $t1, -1
         if (a1 == 0) goto insert_inner_end1; // beqz $a1, insert_inner_end1
         // ; nop
-        login[t1] = s3; // sb $s2, login($t1)
+        login[t1] = s3; // sb $s3, login($t1)
         t1 = t1 + -1; // daddi $t1, $t1, -1
 
         if (t3 >= 0) goto insert; // bgez $t3, insert
@@ -76,7 +76,8 @@ insert:
         goto insert_single_prep; // j insert_single_prep
 
 insert_inner_end:
-        t2 = t2 + 1;
+        t3 = t2 + 0; // daddi $t3, $t2, 0
+        t2 = t2 + 1; // daddi $t2, $t2, 1
         a0 = t3 & v1; // and $a0, $t3, $v1
         login[t1] = s1; // sb $s1, login($t1)
         t1 = t1 + -1; // daddi $t1, $t1, -1
@@ -84,7 +85,7 @@ insert_inner_end:
         goto insert_single; // j insert_single
 
 insert_inner_end1:
-
+        t3 = t2 + -1; // daddi $t3, $t2, -1
         a0 = t2 & v1; // and $a0, $t2, $v1
         login[t1] = s1; // sb $s1, login($t1)
         t1 = t1 + -1; // daddi $t1, $t1, -1
@@ -93,38 +94,89 @@ insert_inner_end1:
 
 insert_single_prep:
         s2 = login[t2]; // lb $s2, login($t2)
-        t2 = t2 + -1; // daddi $t2, $t2, -1
+        s3 = login[t3]; // lb $s3, login($t3)
 
 insert_single:
+        t5 = t2 + 1; // daddi $t5, $t2, 1
         a0 = s0 < s2; // sltu $a0, $s0, $s2
-        // ; nop
-        // ; nop
-        if (a0 == 0) goto insert_single_end; // beqz $a0, insert_single_end
-        login[t1] = s2; // sb $s2, login($t1)
-        t1 = t1 + -1; // daddi $t1, $t1, -1
+        a1 = s0 < s3; // sltu $a1, $s0, $s3
+        t3 = t3 + -2; // daddi $t3, $t3, -2
+        if (a0 == 0) goto insert_single_end1; // beqz $a0, insert_single_end1
+        login[t5] = s2; // sb $s2, login($t5)
+        if (a1 == 0) goto insert_single_end2; // beqz $a1, insert_single_end2
+        login[t2] = s3; // sb $s3, login($t2)
+        t2 = t2 + -2; // daddi $t2, $t2, -2
 
+        if (t3 >= 0) goto insert_single_prep; // bgez $t3, insert_single_prep
+
+        t5 = t3 + 2; // daddi $t5, $t3, 2
+        if (t2 == v0) goto insert_single_end; // beq $t2, $v0, insert_single_end
         s2 = login[t2]; // lb $s2, login($t2)
-        t2 = t2 + -1; // daddi $t2, $t2, -1
-        // ; nop
+        t1 = t0 + 3; // daddi $t1, $t0, 3
+        t0 = t0 + 2; // daddi $t0, $t0, 2
         a0 = s0 < s2; // sltu $a0, $s0, $s2
+        t4 = t5 + -1; // daddi $t4, $t5, -1
+        t2 = t1 + -2; // daddi $t2, $t1, -2
+        if (a0 == 0) goto insert_single_keep; // beqz $a0, insert_single_keep
+        login[t4] = s0; // sb $s0, login($t4)
+        s0 = login[t0]; // lb $s0, login($t0)
+        login[t5] = s2; // sb $s2, login($t5)
+        t3 = t0 + -2; // daddi $t3, $t0, -2
+        if (s0 == 0) goto insert_end; // beqz $s0, insert_end
+        s1 = login[t1]; // lb $s1, login($t1)
         // ; nop
         // ; nop
-        if (a0 == 0) goto insert_single_end; // beqz $a0, insert_single_end
-        login[t1] = s2; // sb $s2, login($t1)
-        t1 = t1 + -1; // daddi $t1, $t1, -1
-        if (t2 >= 0) goto insert_single_prep; // bgez $t2, insert_single_prep
+        if (s1 != 0) goto insert_cmp; // bnez $s1, insert_cmp
+        goto insert_single_prep; // j insert_single_prep
 
 insert_single_end:
-        login[t1] = s0; // sb $s0, login($t1)
-
         t1 = t0 + 3; // daddi $t1, $t0, 3
-        t2 = t0 + 1; // daddi $t2, $t0, 1
-        t3 = t0 + 0; // daddi $t3, $t0, 0
         t0 = t0 + 2; // daddi $t0, $t0, 2
         // ; nop
+        s0 = login[t0]; // lb $s0, login($t0)
+        t2 = t1 + -2; // daddi $t2, $t1, -2
+        t3 = t0 + -2; // daddi $t3, $t0, -2
+        if (s0 == 0) goto insert_end; // beqz $s0, insert_end
+        s1 = login[t1]; // lb $s1, login($t1)
         // ; nop
+        // ; nop
+        if (s1 != 0) goto insert_cmp; // bnez $s1, insert_cmp
+        goto insert_single_prep; // j insert_single_prep
+
+insert_single_keep:
+        login[t5] = s0; // sb $s0, login($t5)
         s0 = login[t0]; // lb $s0, login($t0)
         // ; nop
+        // ; nop
+        if (s0 == 0) goto insert_end; // beqz $s0, insert_end
+        s1 = login[t1]; // lb $s1, login($t1)
+        // ; nop
+        // ; nop
+        if (s1 != 0) goto insert_cmp; // bnez $s1, insert_cmp
+        goto insert_single_prep; // j insert_single_prep
+
+insert_single_end1:
+        t1 = t0 + 3; // daddi $t1, $t0, 3
+        t0 = t0 + 2; // daddi $t0, $t0, 2
+        login[t5] = s0; // sb $s0, login($t5)
+        t2 = t1 + -2; // daddi $t2, $t1, -2
+        s0 = login[t0]; // lb $s0, login($t0)
+        t3 = t0 + -2; // daddi $t3, $t0, -2
+        // ; nop
+        if (s0 == 0) goto insert_end; // beqz $s0, insert_end
+        s1 = login[t1]; // lb $s1, login($t1)
+        // ; nop
+        // ; nop
+        if (s1 != 0) goto insert_cmp; // bnez $s1, insert_cmp
+        goto insert_single_prep; // j insert_single_prep
+
+insert_single_end2:
+        t1 = t0 + 3; // daddi $t1, $t0, 3
+        t0 = t0 + 2; // daddi $t0, $t0, 2
+        login[t2] = s0; // sb $s0, login($t2)
+        t2 = t1 + -2; // daddi $t2, $t1, -2
+        s0 = login[t0]; // lb $s0, login($t0)
+        t3 = t0 + -2; // daddi $t3, $t0, -2
         // ; nop
         if (s0 == 0) goto insert_end; // beqz $s0, insert_end
         s1 = login[t1]; // lb $s1, login($t1)

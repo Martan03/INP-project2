@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main(void) {
-    char login[] = "vitejte-v-inp-2023";
+    char login[] = "xsleza26";
     int v0, v1, a0, a1, t0, a2, a3, t1, t2, t3, t4, t5;
     char s0, s1, s2, s3, s4, s5;
     int zero = 0;
@@ -76,12 +76,11 @@ insert:
         goto insert_single_prep; // j insert_single_prep
 
 insert_inner_end:
-        t3 = t2 + 0; // daddi $t3, $t2, 0
-        t2 = t2 + 1; // daddi $t2, $t2, 1
+        t3 = t2 + 1; // daddi $t3, $t2, 1
+        t2 = t2 + 2; // daddi $t2, $t2, 2
         a0 = t3 & v1; // and $a0, $t3, $v1
         login[t1] = s1; // sb $s1, login($t1)
         t1 = t1 + -1; // daddi $t1, $t1, -1
-        if (a0 != 0) goto insert_single_last; // bnez $a0, insert_single_last
         goto insert_single; // j insert_single
 
 insert_inner_end1:
@@ -91,6 +90,7 @@ insert_inner_end1:
         t1 = t1 + -1; // daddi $t1, $t1, -1
         s2 = s3 + 0; // daddi $s2, $s3, 0
         if (a0 != 0) goto insert_single_last; // bnez $a0, insert_single_last
+        goto insert_single; // j insert_single
 
 insert_single_prep:
         s2 = login[t2]; // lb $s2, login($t2)
@@ -146,7 +146,7 @@ insert_single_end:
 insert_single_keep:
         login[t5] = s0; // sb $s0, login($t5)
         s0 = login[t0]; // lb $s0, login($t0)
-        // ; nop
+        t3 = t0 + -2; // daddi $t3, $t0, -2
         // ; nop
         if (s0 == 0) goto insert_end; // beqz $s0, insert_end
         s1 = login[t1]; // lb $s1, login($t1)

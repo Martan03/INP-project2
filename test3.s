@@ -76,8 +76,8 @@ insert_skip1:
 
         bgez $t3, insert
 
-        daddi $t1, $t0, 3
         daddi $t2, $t0, 1
+        daddi $t1, $t0, 3
         daddi $t3, $t0, 0
         daddi $t0, $t0, 2
         sb $s0, login($zero)
@@ -199,22 +199,26 @@ insert_single_last:
         bnez $t1, insert_single_prep
 
 insert_single_last_end:
-        sb $s0, login($t1)
-        daddi $t1, $t0, 3
         daddi $t2, $t0, 1
-        daddi $t3, $t0, 0
         daddi $t0, $t0, 2
-        ; nop
-        ; nop
+        sb $s0, login($t1)
+        lb $s2, login($t2)
         lb $s0, login($t0)
-        ; nop
-        ; nop
+        daddi $t1, $t0, 1
+        daddi $t3, $t0, -2
         beqz $s0, insert_end
         lb $s1, login($t1)
+        lb $s3, login($t3)
         ; nop
-        ; nop
-        bnez $s1, insert_cmp
-        j insert_single_prep
+        beqz $s1, insert_single
+
+        sltu $a1, $s0, $s1
+        daddi $t2, $t2, -2
+        sltu $a0, $s1, $s2
+        bnez $a1, insert_skip1
+        lb $s0, login($t1)
+        lb $s1, login($t0)
+        j insert_skip1
 
 insert_end_swap:
         sltu $a0, $s0, $s2

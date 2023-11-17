@@ -60,8 +60,10 @@ insert_cmp:
 insert:
         lb $s2, login($t2)
         lb $s3, login($t3)
+insert_skip:
         daddi $t2, $t2, -2
         sltu $a0, $s1, $s2
+insert_skip1:
         daddi $t3, $t3, -2
         sltu $a1, $s1, $s3
         beqz $a0, insert_inner_end
@@ -121,19 +123,25 @@ insert_single:
 
         bgez $t3, insert_single_prep
 
-        daddi $t5, $t3, 2
-        daddi $t1, $t0, 3
+        daddi $t2, $t0, 1
         daddi $t0, $t0, 2
         sb $s0, login($zero)
+        lb $s2, login($t2)
         lb $s0, login($t0)
-        daddi $t2, $t1, -2
+        daddi $t1, $t0, 1
         daddi $t3, $t0, -2
         beqz $s0, insert_end
         lb $s1, login($t1)
-        ; nop
-        ; nop
-        bnez $s1, insert_cmp
-        j insert_single_prep
+        lb $s3, login($t3)
+        beqz $s1, insert_single_prep
+
+        sltu $a1, $s0, $s1
+        daddi $t2, $t2, -2
+        sltu $a0, $s1, $s2
+        bnez $a1, insert_skip1
+        lb $s0, login($t1)
+        lb $s1, login($t0)
+        j insert_skip1
 
 insert_single_end1:
         daddi $t1, $t0, 3

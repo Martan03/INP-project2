@@ -1,8 +1,8 @@
 ; Autor reseni: Martin Slezák xsleza26
-; Pocet cyklu k serazeni puvodniho retezce: 670
-; Pocet cyklu razeni sestupne serazeneho retezce: 737
-; Pocet cyklu razeni vzestupne serazeneho retezce: 310
-; Pocet cyklu razeni retezce s vasim loginem: 177
+; Pocet cyklu k serazeni puvodniho retezce: 625
+; Pocet cyklu razeni sestupne serazeneho retezce: 668
+; Pocet cyklu razeni vzestupne serazeneho retezce: 298
+; Pocet cyklu razeni retezce s vasim loginem: 169
 ; Implementovany radici algoritmus: Insertion sort
 ; ------------------------------------------------
 
@@ -39,7 +39,7 @@ main:
 
         sltu $a0, $s0, $s2
         daddi $t3, $zero, 0
-        daddi $v0, $zero, -1
+        daddi $v0, $zero, 4
         beqz $a0, prep
         sb $s2, login($v1)
         sb $s0, login($zero)
@@ -57,59 +57,87 @@ prep:
 
 insert_cmp:
         sltu $a0, $s0, $s1
-        ; nop
-        ; nop
-        bnez $a0, insert
+        lb $s2, login($t2)
+        lb $s3, login($t3)
+        bnez $a0, insert_skip
         lb $s0, login($t1)
         lb $s1, login($t0)
+        j insert_skip
 
 ; Checks if larger value from the two chars I sort is smaller then current char
 ; If so, moves current char two places to the right, else inserts larger char
 ; to the string and continues to sort remaining char to the string
+; I needed to use 4 indexes so in order to reduce instructions count I have
+; two loops next to each other with index reusing
+; (1. loop $t3, $t2, $t0, $t1, 2. loop $t0, $t1, $t3, $t2)
 insert:
         lb $s2, login($t2)
         lb $s3, login($t3)
 insert_skip:
-        daddi $t2, $t2, -2
-        sltu $a0, $s1, $s2
-insert_skip1:
-        daddi $t3, $t3, -2
-        sltu $a1, $s1, $s3
-        beqz $a0, insert_inner_end
-        sb $s2, login($t1)
-        daddi $t1, $t1, -1
-        beqz $a1, insert_inner_end1
         ; nop
-        sb $s3, login($t1)
-        daddi $t1, $t1, -1
+        sltu $a0, $s1, $s2
+        sltu $a1, $s1, $s3
+        sb $s2, login($t1)
+        beqz $a0, insert_inner_end
+        daddi $t1, $t1, -4
+        beqz $a1, insert_inner_end1
+        sb $s3, login($t0)
+        daddi $t0, $t0, -4
 
-        bgez $t3, insert
+        bgez $t1, insert1
+        j insert_outer_end
 
-        daddi $t0, $t0, 2
-        sb $s0, login($zero)
+insert1:
+        lb $s2, login($t1)
+        lb $s3, login($t0)
+        ; nop
+        sltu $a0, $s1, $s2
+        sltu $a1, $s1, $s3
+        sb $s2, login($t2)
+        beqz $a0, insert_inner_end2
+        daddi $t2, $t2, -4
+        beqz $a1, insert_inner_end3
+        sb $s3, login($t3)
+        daddi $t3, $t3, -4
+
+        bgez $t2, insert
+
+insert_outer_end:
         sb $s1, login($v1)
-        lb $s0, login($t0)
-        daddi $t1, $t0, 1
-        daddi $t3, $t0, -2
+        sb $s0, login($zero)
+        lb $s0, login($v0)
+        daddi $t1, $v0, 1
+        daddi $t0, $v0, 0
         beqz $s0, insert_end
         lb $s1, login($t1)
-        daddi $t2, $t0, -1
-        ; nop
+        daddi $t2, $v0, -1
+        daddi $t3, $v0, -2
+        daddi $v0, $v0, 2
         bnez $s1, insert_cmp
         j insert_single_prep
 
 insert_inner_end:
-        daddi $t3, $t2, 1
-        daddi $t2, $t2, 2
         sb $s1, login($t1)
         daddi $t1, $t1, -1
         j insert_single
 
 insert_inner_end1:
-        daddi $t3, $t2, -1
-        sb $s1, login($t1)
-        daddi $t1, $t1, -1
-        daddi $s2, $s3, 0
+        sb $s1, login($t0)
+        daddi $t1, $t1, 2
+        j insert_single_last
+
+insert_inner_end2:
+        sb $s1, login($t2)
+        daddi $t1, $t3, 0
+        daddi $t3, $t3, -2
+        daddi $t2, $t2, -2
+        j insert_single
+
+insert_inner_end3:
+        sb $s1, login($t3)
+        daddi $t1, $t3, -1
+        daddi $t2, $t2, -2
+        daddi $t3, $t3, -2
         j insert_single_last
 
 ; Checks if remaining char is smaller then current char. If so it moves it to
@@ -132,8 +160,8 @@ insert_single:
 
         bgez $t3, insert_single_prep
 
-        daddi $t2, $t0, 1
-        daddi $t0, $t0, 2
+        daddi $t2, $v0, -1
+        daddi $t0, $v0, 0
         sb $s0, login($zero)
         lb $s2, login($t2)
         lb $s0, login($t0)
@@ -142,20 +170,20 @@ insert_single:
         beqz $s0, insert_end
         lb $s1, login($t1)
         lb $s3, login($t3)
-        ; nop
+        daddi $v0, $v0, 2
         beqz $s1, insert_single
 
         sltu $a1, $s0, $s1
-        daddi $t2, $t2, -2
-        sltu $a0, $s1, $s2
-        bnez $a1, insert_skip1
+        ; nop
+        ; nop
+        bnez $a1, insert_skip
         lb $s0, login($t1)
         lb $s1, login($t0)
-        j insert_skip1
+        j insert_skip
 
 insert_single_end1:
-        daddi $t2, $t0, 1
-        daddi $t0, $t0, 2
+        daddi $t2, $v0, -1
+        daddi $t0, $v0, 0
         sb $s0, login($t5)
         lb $s2, login($t2)
         lb $s0, login($t0)
@@ -164,20 +192,20 @@ insert_single_end1:
         beqz $s0, insert_end
         lb $s1, login($t1)
         lb $s3, login($t3)
-        ; nop
+        daddi $v0, $v0, 2
         beqz $s1, insert_single
 
         sltu $a1, $s0, $s1
-        daddi $t2, $t2, -2
-        sltu $a0, $s1, $s2
-        bnez $a1, insert_skip1
+        ; nop
+        ; nop
+        bnez $a1, insert_skip
         lb $s0, login($t1)
         lb $s1, login($t0)
-        j insert_skip1
+        j insert_skip
 
 insert_single_end2:
-        daddi $t3, $t0, 0
-        daddi $t0, $t0, 2
+        daddi $t3, $v0, -2
+        daddi $t0, $v0, 0
         sb $s0, login($t2)
         lb $s3, login($t3)
         lb $s0, login($t0)
@@ -186,30 +214,30 @@ insert_single_end2:
         beqz $s0, insert_end
         lb $s1, login($t1)
         lb $s2, login($t2)
-        ; nop
+        daddi $v0, $v0, 2
         beqz $s1, insert_single
 
         sltu $a1, $s0, $s1
-        daddi $t2, $t2, -2
-        sltu $a0, $s1, $s2
-        bnez $a1, insert_skip1
+        ; nop
+        ; nop
+        bnez $a1, insert_skip
         lb $s0, login($t1)
         lb $s1, login($t0)
-        j insert_skip1
+        j insert_skip
 
 insert_single_last:
-        sltu $a0, $s0, $s2
-        ; nop
-        ; nop
+        sltu $a0, $s0, $s3
+        daddi $t2, $t2, -2
+        daddi $t3, $t3, -2
         beqz $a0, insert_single_last_end
-        sb $s2, login($t1)
+        sb $s3, login($t1)
         daddi $t1, $t1, -1
 
         bnez $t1, insert_single_prep
 
 insert_single_last_end:
-        daddi $t2, $t0, 1
-        daddi $t0, $t0, 2
+        daddi $t2, $v0, -1
+        daddi $t0, $v0, 0
         sb $s0, login($t1)
         lb $s2, login($t2)
         lb $s0, login($t0)
@@ -218,16 +246,16 @@ insert_single_last_end:
         beqz $s0, insert_end
         lb $s1, login($t1)
         lb $s3, login($t3)
-        ; nop
+        daddi $v0, $v0, 2
         beqz $s1, insert_single
 
         sltu $a1, $s0, $s1
-        daddi $t2, $t2, -2
-        sltu $a0, $s1, $s2
-        bnez $a1, insert_skip1
+        ; nop
+        ; nop
+        bnez $a1, insert_skip
         lb $s0, login($t1)
         lb $s1, login($t0)
-        j insert_skip1
+        j insert_skip
 
 insert_end_swap:
         sltu $a0, $s0, $s2

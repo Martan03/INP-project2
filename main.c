@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main(void) {
-    char login[] = "Ahoj jak se mas? Ja se mam dobre";
+    char login[] = "Ahoj Pepo, zahrajeme si? Jmenuji se Martan03!!";
     int v0, v1, a0, a1, t0, a2, a3, t1, t2, t3, t4, t5;
     char s0, s1, s2, s3, s4, s5;
     int zero = 0;
@@ -120,7 +120,7 @@ insert_inner_end2:
 insert_inner_end3:
         login[t3] = s1; // sb $s1, login($t3)
         t1 = t3 + -1; // daddi $t1, $t3, -1
-        t2 = t2 + -2; // daddi $t2, $t2, -2
+        t2 = t2 + 2; // daddi $t2, $t2, 2
         t3 = t3 + -2; // daddi $t3, $t3, -2
         goto insert_single_last; // j insert_single_last
 
@@ -203,7 +203,8 @@ insert_single_last_end:
         t3 = v0 + -2; // daddi $t3, $v0, -2
         v0 = v0 + 2; // daddi $v0, $v0, 2
         if (s1 != 0) goto insert_cmp; // bnez $s1, insert_cmp
-        goto insert_single; // j insert_single
+        v0 = v0 + -1;
+        goto insert_single_prep; // j insert_single
 
 insert_end_swap:
         a0 = s0 < s2; // sltu $a0, $s0, $s2
@@ -235,7 +236,7 @@ insert_end_swap_end:
 
 insert_end:
 
-    printf("---0223eeiijnpttvv\n");
+    printf("      !,03?AJMPaaaaeeeeehhiijjjmmnnooprrsstuz\n");
     printf("%s\n", login);
 
     return 0;

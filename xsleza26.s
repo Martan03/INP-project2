@@ -8,10 +8,10 @@
 
 ; DATA SEGMENT
                 .data
-; login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
+login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
 ; login:          .asciiz "vvttpnjiiee3220---"  ; sestupne serazeny retezec
 ; login:          .asciiz "---0223eeiijnpttvv"  ; vzestupne serazeny retezec
-login:          .asciiz "Ahoj Pepicku1, jdeme hrat mc, jmenuji se Martan03"            ; SEM DOPLNTE VLASTNI LOGIN
+; login:          .asciiz "Ahoj Pepo, zahrajeme si? Jmenuji se Martan03!!"            ; SEM DOPLNTE VLASTNI LOGIN
                                                 ; A POUZE S TIMTO ODEVZDEJTE
 
 params_sys5:    .space  8   ; misto pro ulozeni adresy pocatku
@@ -225,7 +225,8 @@ insert_single_last_end:
         daddi $t3, $v0, -2
         daddi $v0, $v0, 2
         bnez $s1, insert_cmp
-        j insert_single
+        daddi $v0, $v0, -1
+        j insert_single_prep
 
 insert_end_swap:
         sltu $a0, $s0, $s2

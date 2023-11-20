@@ -11,7 +11,7 @@
 ; login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
 ; login:          .asciiz "vvttpnjiiee3220---"  ; sestupne serazeny retezec
 ; login:          .asciiz "---0223eeiijnpttvv"  ; vzestupne serazeny retezec
-login:          .asciiz "Ahoj jak se mas? Ja se mam dobre"            ; SEM DOPLNTE VLASTNI LOGIN
+login:          .asciiz "Ahoj Pepicku1, jdeme hrat mc, jmenuji se Martan03"            ; SEM DOPLNTE VLASTNI LOGIN
                                                 ; A POUZE S TIMTO ODEVZDEJTE
 
 params_sys5:    .space  8   ; misto pro ulozeni adresy pocatku
@@ -142,7 +142,7 @@ insert_inner_end2:
 insert_inner_end3:
         sb $s1, login($t3)
         daddi $t1, $t3, -1
-        daddi $t2, $t2, -2
+        daddi $t2, $t2, 2
         daddi $t3, $t3, -2
         j insert_single_last
 

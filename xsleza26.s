@@ -8,10 +8,10 @@
 
 ; DATA SEGMENT
                 .data
-login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
+; login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
 ; login:          .asciiz "vvttpnjiiee3220---"  ; sestupne serazeny retezec
 ; login:          .asciiz "---0223eeiijnpttvv"  ; vzestupne serazeny retezec
-; login:          .asciiz "Ahoj Pepo, zahrajeme si? Jmenuji se Martan03!!"            ; SEM DOPLNTE VLASTNI LOGIN
+login:          .asciiz "xsleza26"            ; SEM DOPLNTE VLASTNI LOGIN
                                                 ; A POUZE S TIMTO ODEVZDEJTE
 
 params_sys5:    .space  8   ; misto pro ulozeni adresy pocatku
@@ -176,7 +176,8 @@ insert_single:
         daddi $t3, $v0, -2
         daddi $v0, $v0, 2
         bnez $s1, insert_cmp
-        j insert_single
+        daddi $v0, $v0, -1
+        j insert_single_prep
 
 insert_single_end1:
         sb $s0, login($t5)
@@ -189,7 +190,8 @@ insert_single_end1:
         daddi $t3, $v0, -2
         daddi $v0, $v0, 2
         bnez $s1, insert_cmp
-        j insert_single
+        daddi $v0, $v0, -1
+        j insert_single_prep
 
 insert_single_end2:
         sb $s0, login($t2)
@@ -202,7 +204,8 @@ insert_single_end2:
         daddi $t3, $v0, -2
         daddi $v0, $v0, 2
         bnez $s1, insert_cmp
-        j insert_single
+        daddi $v0, $v0, -1
+        j insert_single_prep
 
 insert_single_last:
         sltu $a0, $s0, $s3
@@ -235,13 +238,10 @@ insert_end_swap:
         beqz $a0, insert_end
         sb $s2, login($t0)
 
-        lb $s2, login($v1)
+        sltu $a0, $s0, $s3
+        sb $s0, login($v1)
         ; nop
-        ; nop
-        sltu $a0, $s0, $s2
-        ; nop
-        ; nop
-        beqz $a0, insert_end_swap_end
+        beqz $a0, insert_end
         sb $s0, login($zero)
         sb $s2, login($v1)
         j insert_end
@@ -250,11 +250,6 @@ insert_end2:
         beqz $a0, insert_end
         sb $s2, login($zero)
         sb $s3, login($v1)
-        j insert_end
-
-insert_end_swap_end:
-        sb $s0, login($v1)
-        sb $s2, login($zero)
 
 insert_end:
 

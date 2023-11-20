@@ -1,8 +1,8 @@
 ; Autor reseni: Martin Slezák xsleza26
-; Pocet cyklu k serazeni puvodniho retezce: 625
-; Pocet cyklu razeni sestupne serazeneho retezce: 668
-; Pocet cyklu razeni vzestupne serazeneho retezce: 298
-; Pocet cyklu razeni retezce s vasim loginem: 169
+; Pocet cyklu k serazeni puvodniho retezce: 607
+; Pocet cyklu razeni sestupne serazeneho retezce: 655
+; Pocet cyklu razeni vzestupne serazeneho retezce: 283
+; Pocet cyklu razeni retezce s vasim loginem: 165
 ; Implementovany radici algoritmus: Insertion sort
 ; ------------------------------------------------
 
@@ -11,7 +11,7 @@
 ; login:          .asciiz "vitejte-v-inp-2023"    ; puvodni uvitaci retezec
 ; login:          .asciiz "vvttpnjiiee3220---"  ; sestupne serazeny retezec
 ; login:          .asciiz "---0223eeiijnpttvv"  ; vzestupne serazeny retezec
-login:          .asciiz "xsleza26"            ; SEM DOPLNTE VLASTNI LOGIN
+login:          .asciiz "Ahoj jak se mas? Ja se mam dobre"            ; SEM DOPLNTE VLASTNI LOGIN
                                                 ; A POUZE S TIMTO ODEVZDEJTE
 
 params_sys5:    .space  8   ; misto pro ulozeni adresy pocatku
@@ -24,36 +24,42 @@ main:
         ; I used insertion sort with optimization inspired by merge sort.
         ; I sort two elements at the time to the sorted part in order to reduce
         ; iterations. The two elements are sorted before sorting them to the
-        ; sorted part.
+        ; sorted part. This could work with more chars then 2, but it would
+        ; make the code longer
 
         ; Initializes variable
-        lb $s2, login($zero)
+        lb $s3, login($zero)
         daddi $v1, $zero, 1
         daddi $t0, $zero, 2
+        beqz $s3, insert_end
+
+        lb $s2, login($v1)
+        daddi $t3, $zero, 3
+        daddi $t2, $zero, 1
         beqz $s2, insert_end
 
-        lb $s0, login($v1)
-        daddi $t1, $zero, 3
-        daddi $t2, $zero, 1
-        beqz $s0, insert_end
-
-        sltu $a0, $s0, $s2
-        daddi $t3, $zero, 0
-        daddi $v0, $zero, 4
-        beqz $a0, prep
-        sb $s2, login($v1)
-        sb $s0, login($zero)
-
-prep:
         lb $s0, login($t0)
-        ; nop
-        ; nop
-        beqz $s0, insert_end
+        daddi $t1, $zero, 3
+        sltu $a0, $s2, $s3
+        beqz $s0, insert_end2
 
         lb $s1, login($t1)
-        ; nop
-        ; nop
+        beqz $a0, prep
+
+        sb $s2, login($zero)
+        sb $s3, login($v1)
+        lb $s2, login($v1)
+        lb $s3, login($zero)
+prep:
         beqz $s1, insert_end_swap
+
+        sltu $a1, $s0, $s1
+        daddi $t3, $zero, 0
+        daddi $v0, $zero, 4
+        bnez $a1, insert_skip
+        lb $s0, login($t1)
+        lb $s1, login($t0)
+        j insert_skip
 
 insert_cmp:
         sltu $a0, $s0, $s1
@@ -160,70 +166,43 @@ insert_single:
 
         bgez $t3, insert_single_prep
 
-        daddi $t2, $v0, -1
-        daddi $t0, $v0, 0
         sb $s0, login($zero)
-        lb $s2, login($t2)
-        lb $s0, login($t0)
-        daddi $t1, $t0, 1
-        daddi $t3, $t0, -2
+        lb $s0, login($v0)
+        daddi $t1, $v0, 1
+        daddi $t0, $v0, 0
         beqz $s0, insert_end
         lb $s1, login($t1)
-        lb $s3, login($t3)
+        daddi $t2, $v0, -1
+        daddi $t3, $v0, -2
         daddi $v0, $v0, 2
-        beqz $s1, insert_single
-
-        sltu $a1, $s0, $s1
-        ; nop
-        ; nop
-        bnez $a1, insert_skip
-        lb $s0, login($t1)
-        lb $s1, login($t0)
-        j insert_skip
+        bnez $s1, insert_cmp
+        j insert_single
 
 insert_single_end1:
-        daddi $t2, $v0, -1
-        daddi $t0, $v0, 0
         sb $s0, login($t5)
-        lb $s2, login($t2)
-        lb $s0, login($t0)
-        daddi $t1, $t0, 1
-        daddi $t3, $t0, -2
+        lb $s0, login($v0)
+        daddi $t1, $v0, 1
+        daddi $t0, $v0, 0
         beqz $s0, insert_end
         lb $s1, login($t1)
-        lb $s3, login($t3)
+        daddi $t2, $v0, -1
+        daddi $t3, $v0, -2
         daddi $v0, $v0, 2
-        beqz $s1, insert_single
-
-        sltu $a1, $s0, $s1
-        ; nop
-        ; nop
-        bnez $a1, insert_skip
-        lb $s0, login($t1)
-        lb $s1, login($t0)
-        j insert_skip
+        bnez $s1, insert_cmp
+        j insert_single
 
 insert_single_end2:
-        daddi $t3, $v0, -2
-        daddi $t0, $v0, 0
         sb $s0, login($t2)
-        lb $s3, login($t3)
-        lb $s0, login($t0)
-        daddi $t1, $t0, 1
-        daddi $t2, $t0, -1
+        lb $s0, login($v0)
+        daddi $t1, $v0, 1
+        daddi $t0, $v0, 0
         beqz $s0, insert_end
         lb $s1, login($t1)
-        lb $s2, login($t2)
+        daddi $t2, $v0, -1
+        daddi $t3, $v0, -2
         daddi $v0, $v0, 2
-        beqz $s1, insert_single
-
-        sltu $a1, $s0, $s1
-        ; nop
-        ; nop
-        bnez $a1, insert_skip
-        lb $s0, login($t1)
-        lb $s1, login($t0)
-        j insert_skip
+        bnez $s1, insert_cmp
+        j insert_single
 
 insert_single_last:
         sltu $a0, $s0, $s3
@@ -233,29 +212,20 @@ insert_single_last:
         sb $s3, login($t1)
         daddi $t1, $t1, -1
 
-        bnez $t1, insert_single_prep
+        bgez $t3, insert_single_prep
 
 insert_single_last_end:
         daddi $t2, $v0, -1
-        daddi $t0, $v0, 0
         sb $s0, login($t1)
-        lb $s2, login($t2)
-        lb $s0, login($t0)
-        daddi $t1, $t0, 1
-        daddi $t3, $t0, -2
+        lb $s0, login($v0)
+        daddi $t1, $v0, 1
+        daddi $t0, $v0, 0
         beqz $s0, insert_end
         lb $s1, login($t1)
-        lb $s3, login($t3)
+        daddi $t3, $v0, -2
         daddi $v0, $v0, 2
-        beqz $s1, insert_single
-
-        sltu $a1, $s0, $s1
-        ; nop
-        ; nop
-        bnez $a1, insert_skip
-        lb $s0, login($t1)
-        lb $s1, login($t0)
-        j insert_skip
+        bnez $s1, insert_cmp
+        j insert_single
 
 insert_end_swap:
         sltu $a0, $s0, $s2
@@ -273,6 +243,12 @@ insert_end_swap:
         beqz $a0, insert_end_swap_end
         sb $s0, login($zero)
         sb $s2, login($v1)
+        j insert_end
+
+insert_end2:
+        beqz $a0, insert_end
+        sb $s2, login($zero)
+        sb $s3, login($v1)
         j insert_end
 
 insert_end_swap_end:
